@@ -56,6 +56,8 @@ plotformat
 xlim([-50,100])
 xticklabels('auto')
 title('AMPK')
+
+
 subplot(3,2,3)
 hold on
 plot(t,y(:,pmTORC1),'Color',colorvector(VIR_ind,:),'LineStyle',char(markervector(khyd_ind)))

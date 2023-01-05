@@ -1,5 +1,5 @@
 
-function [f] = leung2022_ampkact(t,x,pars,kHYD,pulsetime,freeVIR,freepar_glyc)
+function [f] = leung2022_SERCA(t,x,pars,kHYD,pulsetime)
         %==================================================================
 %% Species Definition
     %ATP module
@@ -15,72 +15,59 @@ function [f] = leung2022_ampkact(t,x,pars,kHYD,pulsetime,freeVIR,freepar_glyc)
         Act       = x(10);
         AICAR     = x(11);
     % Calcium module
-        x_cal = x(12:42);
-        Glut      =  x_cal(1);
-        Ca_ER     =  x_cal(2);
-        Ca_C      =  x_cal(3); %
-        w         =  x_cal(4);%15
-        Ri        =  x_cal(5);  
-        R2        =  x_cal(6);
-        DIM       =  x_cal(7);
-        DAG       =  x_cal(8);
-        DIMp      =  x_cal(9);%20
-        NMDA_C0   =  x_cal(10);
-        NMDA_C1   =  x_cal(11);
-        NMDA_C2   =  x_cal(12);
-        NMDA_D    =  x_cal(13);
-        NMDA_O    =  x_cal(14);%25
-        PKC       =  x_cal(15);
-        IP3       =  x_cal(16);
-        B         =  x_cal(17);
-        BCa       =  x_cal(18);
-        BuffER    =  x_cal(19);%30
-        AMPA_U    =  x_cal(20); 
-        AMPA_M    =  x_cal(21);
-        AMPA_C    =  x_cal(22);
-        AMPA_O    =  x_cal(23); 
-        AMPA_D1   =  x_cal(24);%35
-        AMPA_D2   =  x_cal(25);
-        AMPA_D3   =  x_cal(26);
-        V         =  x_cal(27);
-        CaM       =  x_cal(28);
-        CaCaM     =  x_cal(29);%40
-        CaMKK2    =  x_cal(30);
-        CaMKK2_act=  x_cal(31);
+        Glut      =  x(12);
+        Ca_ER     =  x(13);
+        Ca_C      =  x(14); %
+        w         =  x(15);%15
+        Ri        =  x(16);  
+        R2        =  x(17);
+        DIM       =  x(18);
+        DAG       =  x(19);
+        DIMp      =  x(20);%20
+        NMDA_C0   =  x(21);
+        NMDA_C1   =  x(22);
+        NMDA_C2   =  x(23);
+        NMDA_D    =  x(24);
+        NMDA_O    =  x(25);%25
+        PKC       =  x(26);
+        IP3       =  x(27);
+        B         =  x(28);
+        BCa       =  x(29);
+        BuffER    =  x(30);%30
+        AMPA_U    =  x(31); 
+        AMPA_M    =  x(32);
+        AMPA_C    =  x(33);
+        AMPA_O    =  x(34); 
+        AMPA_D1   =  x(35);%35
+        AMPA_D2   =  x(36);
+        AMPA_D3   =  x(37);
+        
+        V         = x(38);
+        CaM       =  x(39);
+        CaCaM     =  x(40);%40
+        CaMKK2    =  x(41);
+        CaMKK2_act=  x(42);
         %% MTOR AMPK
-%         AKT           = x(43);
-%         pAKT          = x(44);
-%         mTORC1        = x(45);
-%         pmTORC1       = x(46);
-%         mTORC2        = x(47);
-%         pmTORC2       = x(48);
-%         mTORC1_DEPTOR = x(49);
-%         mTORC2_DEPTOR = x(50);
-%         DEPTOR        = x(51);
-%         pDEPTOR       = x(52);
-%         SIRT1         = x(53);
-%         ULK1          = x(54);
-%         pULK1         = x(55);
-offset=42;
+    IR            = 1000 * x(43);
+    pIR           = 1000 * x(44);
+    IRS           = 1000 * x(45);
+    pIRS          = 1000 * x(46);
+    iIRS          = 1000 * x(47);
+    AKT           = 1000 * x(48);
+    pAKT          = 1000 * x(49);
+    mTORC1        = 1000 * x(50);
+    pmTORC1       = 1000 * x(51);
+    mTORC2        = 1000 * x(52);
+    pmTORC2       = 1000 * x(53);
+    mTORC1_DEPTOR = 1000 * x(54);
+    mTORC2_DEPTOR = 1000 * x(55);
+    DEPTOR        = 1000 * x(56);
+    pDEPTOR       = 1000 * x(57);
+    SIRT1         = 1000 * x(58);
+    ULK1          = 1000 * x(59);
+    pULK1         = 1000 * x(60);
 
-    IR            = 1000 * x(offset +1);
-    pIR           = 1000 * x(offset +2);
-    IRS           = 1000 * x(offset +3);
-    pIRS          = 1000 * x(offset +4);
-    iIRS          = 1000 * x(offset +5);
-    AKT           = 1000 * x(offset +6);
-    pAKT          = 1000 * x(offset +7);
-    mTORC1        = 1000 * x(offset +8);
-    pmTORC1       = 1000 * x(offset +9);
-    mTORC2        = 1000 * x(offset +10);
-    pmTORC2       = 1000 * x(offset +11);
-    mTORC1_DEPTOR = 1000 * x(offset +12);
-    mTORC2_DEPTOR = 1000 * x(offset +13);
-    DEPTOR        = 1000 * x(offset +14);
-    pDEPTOR       = 1000 * x(offset +15);
-    SIRT1         = 1000 * x(offset +16);
-    ULK1          = 1000 * x(offset +17);
-    pULK1         = 1000 * x(offset +18);
+
 
 
         
@@ -91,9 +78,9 @@ offset=42;
         nH          = pars(3);
 
         krest      = pars(4);
-%         if(kHYD>0)
-%             krest = kHYD;
-%         end
+        if(kHYD>0)
+            krest = kHYD;
+        end
         kstim      = pars(5);
         kpost      = pars(6);
         vAK         = pars(7);
@@ -101,6 +88,7 @@ offset=42;
         kmd         = pars(9);
         kmm         = pars(10);
         keqadk      = pars(11);
+       
         vmax20      = pars(12);
         vmax21      = pars(13);
         km20        = pars(14);
@@ -154,7 +142,7 @@ offset=42;
         %SERCA
         VSERCA      = pars(55);% 120;
         Kp          = pars(56);% 6;
-        %Ke = 0;
+        Ke_SERCA = 2000;
         %NMDA
         Rb          = pars(57);% 5; % 1/uM.s
         Ru          = pars(58);% 46.5; % /s
@@ -168,13 +156,12 @@ offset=42;
         taubsf      = pars(66);% 0.003; % s
         tdelaybp    = pars(67);% 0.002; %s
         s_term      = pars(68);% 10; % mV
-        V_reversal  = pars(69);% -65; % mV
+        V_reversal  = -pars(69);% (-)65; % mV
         N_NMDA      = pars(70);% 1; 
         BPAPmax     = pars(71);% 40; %mV
-        G_NMDA      = pars(72);% -65.6e6;
+        G_NMDA      = -pars(72);% (-)65.6e6;
         k_ext       = pars(73);%0.25*1e19/(2 * 1.602*6.022e23);%picoAmpere to Flux (micro mol/Ls)  
         Kmext       = pars(74);% 0.1;
-       
         kdeg        = pars(75);% 5;
         kpmleak     = pars(76);% 0.5;
         k_buffcyt   = pars(77);%   0.1;
@@ -210,12 +197,9 @@ offset=42;
         kf_CaMDisc  = pars(104);% 1;
 
 %% mTOR AMPK
-        parstart = 104;
-
-        krampk_bal = 150;
-
-
-    V_IR                        = pars(parstart +1);         % Rate of activation of IR
+       parstart = 104;
+      
+     V_IR                        = pars(parstart +1);         % Rate of activation of IR
     Km_IR                       = pars(parstart +2);         % MM constant for the activation of IR
     V_pIR                       = pars(parstart +3);         % Rate of deactivation of IR
     Km_pIR                      = pars(parstart +4);         % MM constant for the deactivation of IR
@@ -274,6 +258,9 @@ offset=42;
     K_pULK1_by_pmTORC1          = pars(parstart +57);        % Rate of deactivation of pULK1 via pmTORC1
     Km_pULK1                    = pars(parstart +58);        % MM constant for the deactivation of ULK1
 
+    krampk_bal = pars(parstart+59);
+    km_CA_ATP                   = 500;
+
   %% Flux Definition : Mitochondrial and Cytosolic metabolism     
         
         
@@ -285,12 +272,12 @@ offset=42;
   %  KpmTORC1AMPK= multkrest*KpmTORC1AMPK;
 %krampk_bal = multkrest;
 %IRS = multkrest;
-V_IR = V_IR *freeVIR ; 
+
 %%
-        krest = krest*(freepar_glyc);
+
         r1  = krest*ATP;
    
-        r2_num=VmaxOP*(ADP/KADP)^nH;
+        r2_num=VmaxOP*(ADP/KADP)^nH;%^*(Ca_C^1.4/(Ca_C^1.4 + km_CA_ATP));
         r2_den=(1+(ADP/KADP)^nH);
         r2  = r2_num/r2_den;
         
@@ -341,34 +328,35 @@ V_IR = V_IR *freeVIR ;
         J_w = (winf-w)/tau;
         J_RYR =  VRYR * Po*(Ca_ER); 
 
-        JPMCA = k_ext * (Ca_C)^2/((Ca_C)^2 + Kmext);
+        JPMCA = k_ext * (Ca_C)^2/((Ca_C)^2 + Kmext)*(ATP)/(Ke_SERCA+ATP);
 
-        J_PMleak = kpmleak * (Ca_C - 0.1);
+        J_PMleak =1* kpmleak * (Ca_C - 0.1);
        
         
         %SERCA
         %kxserca = (k2serca*(Ca_C^2)+ k4rserca * K1serca)/(K1serca + Ca_C^2);
         %kyserca = (k2rserca * K3serca*(Ca_ER^2) +k4serca)/(gammaserca *(1+K3serca*Ca_ER^2));
         %J_SERCA = 
-        J_SERCA = 2*VSERCA*(Ca_C^2/(Kp^2+Ca_C^2));%*(ATP_C)/(Ke+ATP_C);
+        J_SERCA = VSERCA*(Ca_C^2/(Kp^2+Ca_C^2))*(ATP)/(Ke_SERCA+ATP);
         %
 
         J_BuffCa = k_buffcyt * Ca_C * B -k_buffcyt_r * BCa;
 
         J_ER_Buff = k_ERBUFF * Ca_ER - k_ERBUFF_ *BuffER;
        
-        J_ER_leak = kerleak*(Ca_ER - 600);
+        J_ER_leak = 1*kerleak*(Ca_ER - 600);
         %NMDA
         JN1   = Rb*NMDA_C0*Glut - Ru*NMDA_C1;
         JN2   = Rb*NMDA_C1*Glut- Ru*NMDA_C2;
-        JN3   = Rd *NMDA_C2 - Rr*NMDA_D;
+        JN3   = Rd*NMDA_C2 - Rr*NMDA_D;
         JN4   = Ro*NMDA_C2 - Rc*NMDA_O;
-        BPAP =BPAPmax*(0.75*exp(-(t-pulsetime -tdelaybp)/taubsf) +0.25*exp(-(t-pulsetime)/taubss)  );
+        BPAP =BPAPmax*(0.75*exp(-(t-pulsetime -tdelaybp)/taubsf) +0.25*exp(-(t-pulsetime)/taubss)  )/2;
         EPSP =s_term *(0.5*exp(-(t-pulsetime)/tauesf) +  0.5*exp(-(t-pulsetime)/tauess));
         BV = 1/(1 + (exp(-0.092*V ) * (1/3.57)));
-        J_NMDA = G_NMDA*NMDA_O*BV*((V+V_reversal))*N_NMDA*1e19/ (2 * 1.602*6.022e23);
-        J_PM = (J_NMDA  - JPMCA - J_PMleak) ;
-       
+                
+ 
+
+
         
         
         JA1 = kAMPA_1f *AMPA_U * Glut -kAMPA_1r *AMPA_M;
@@ -380,7 +368,16 @@ V_IR = V_IR *freeVIR ;
         JA7 = kAMPA_7f *AMPA_D1* Glut -kAMPA_7r *AMPA_D2;
         JA8 = kAMPA_8f *AMPA_D2 -kAMPA_8r *AMPA_D3;
         AMPA_EPSP = AMPA_O * G_AMPA *BV* (V);
-        
+
+        V = -65 + BPAP + EPSP + AMPA_EPSP;
+        AMPA_EPSP = AMPA_O * G_AMPA *BV* (V);
+         BPAP =0.5*BPAPmax*(0.75*exp(-(t-pulsetime -tdelaybp)/taubsf) +0.25*exp(-(t-pulsetime)/taubss)  );
+        EPSP =s_term *(0.5*exp(-(t-pulsetime)/tauesf) +  0.5*exp(-(t-pulsetime)/tauess));
+        BV = 1/(1 + (exp(-0.092*V ) * (1/3.57)));
+                J_NMDA = 0.1*G_NMDA*NMDA_O*BV*((V+V_reversal))*N_NMDA*1e19/ (2 * 1.602*6.022e23);      
+
+        J_PM = 5*(J_NMDA  - JPMCA - J_PMleak) ;
+
         %mgluR  
         J_R2    =  -kb*R2*Glut^2+ku*DIM;
         J_DIM   =  kb*R2*Glut^2-ku*DIM+Vp*DIMp/(Kmp+DIMp)-Vpkc*PKC*DIM/(Kmpkc+DIM);
@@ -395,29 +392,29 @@ V_IR = V_IR *freeVIR ;
         J_CAMKK2_Act = Vm_kk2 * (1 + CaCaM/Ka_kk2)*CaMKK2/(Km_kk2 + CaMKK2);
         J_CAMKK2_Deac = kf_CaMDisc * CaMKK2_act;
         
-        J_ATP_Ca = (J_SERCA + JPMCA);
+        J_ATP_Ca = J_SERCA + JPMCA;
 
 
 
-
-
-SIRT1_total = 37.5;
+SIRT1_total = 375;
+%pre convert for JM fluxes, which are in units of mM
 AMPK = (Act_AMPK + AMPK)*1000;
 pAMPK = (Act_pAMPK + pAMPK)*1000;
 
-%V_IR = 0.0001;
-%V_IR = 0.001;
-%V_IR = 0.01;
-%V_IR = 0.1;
-%V_IR = 0.000001;
 
-%       K_pmTORC1_by_pAMPK = K_pmTORC1_by_pAMPK  * 500;
-%      V_pmTORC2      = V_pmTORC2 * 0.4;
-% %=  KULK1AMPK= KULK1AMPK;% KULK1AMPK 0.7
-%   K_ULK1 =K_ULK1*2;
+       % J_ATP_Ca = 0;
+
+%% parbox
+%    KpmTORC1 = KpmTORC1 * 1;
+   %  KmpmTORC1A   = KmpmTORC1A * parmult;
+%  
 
 
- %Set the rate equation for each reaction in the system
+
+
+    %% Fluxes for mTOR
+        % format FluxName = mm(Vmax,Km, Substrate)
+        % Output
     JM1  = (V_IR*IR)/(Km_IR+IR); % IR...pIR
     JM2  = (V_pIR*pIR)/(Km_pIR+pIR); % pIR...IR
     JM3  = (K_IRS_by_pIR*pIR*IRS)/(Km_IRS_by_pIR+IRS); % IRS...pIRS
@@ -440,114 +437,87 @@ pAMPK = (Act_pAMPK + pAMPK)*1000;
     JM20 = (K_ULK1+K_ULK1_by_pAMPK * pAMPK)*ULK1/(Km_ULK1 + ULK1); % ULK1...pULK1
     JM21 = (K_pULK1+K_pULK1_by_pmTORC1 * pmTORC1)*pULK1/(Km_pULK1 + pULK1); % pULK1...ULK1
 AMPK = (AMPK-Act_AMPK*1000)/1000;
-pAMPK = (pAMPK-Act_pAMPK*1000)/1000;
-
+pAMPK = (pAMPK-Act_pAMPK*1000)/1000; % reconvert back to normal (this doesn't have an explicit function right now, but is useful for later
 
     %% ODE Definition
 
-        xdot_cal=zeros(31,1);
-        xdot_cal(1) =  -200 * Glut; % Glutamate
-        xdot_cal(2) =  4*(J_SERCA - J_IP3R - J_RYR-J_ER_leak) - J_ER_Buff; % Ca_ER
-        %xdot(2) = 0;
-        xdot_cal(3) =  -1/4*(J_SERCA - J_IP3R - J_RYR+J_ER_leak) + J_PM - J_BuffCa -J_CaMBind; % CA_C
-        xdot_cal(4) =  J_w; % w
-        xdot_cal(5) =  J_Ri; % Ri
-        xdot_cal(6) =  J_R2; % R2
-        xdot_cal(7) =  J_DIM; % DIM
-        xdot_cal(8) =  J_DAG; %DAG
-        xdot_cal(9) =  J_DIMp; %dimp
-        xdot_cal(10) = -JN1 ; %NMDA C0
-        xdot_cal(11) =  +JN1 - JN2; %NMDA C1
-        xdot_cal(12) =  +JN2 -JN3 -JN4; %NMDA C2
-        xdot_cal(13) =  JN3; %NMDA D
-        xdot_cal(14) =  JN4; %NMDA O
-        xdot_cal(15) =  J_PKC; %PKC
-        xdot_cal(16) = J_IP - kdeg*(IP3 - 0.01);
-        xdot_cal(17) = -J_BuffCa;
-        xdot_cal(18) = +J_BuffCa;
-        xdot_cal(19) = J_ER_Buff;
-        
-        xdot_cal(20) = -JA1 ;%U
-        xdot_cal(21) = +JA1 - JA2-JA4 ;%M
-        xdot_cal(22) = JA2 - JA3 - JA5 ;%C
-        xdot_cal(23) =  JA3 - JA6;%O
-        xdot_cal(24) =  JA4 - JA7;%D1
-        xdot_cal(25) =  JA5 + JA7 - JA8;%D2
-        xdot_cal(26) =  JA6 + JA8;%D3
-        xdot_cal(27) =  0; %V
-        xdot_cal(28) = -J_CaMBind + J_CaMDisc; %CaM
-        xdot_cal(29) = J_CaMBind - J_CaMDisc;%CaCaM
-        xdot_cal(30) =  -J_CAMKK2_Act + J_CAMKK2_Deac; %CAMKK2
-        xdot_cal(31) = J_CAMKK2_Act -J_CAMKK2_Deac; %CAMKK2_act
-        
-        x_cal(27) = -65 + BPAP + EPSP + AMPA_EPSP;
-        
 
-
-
+        
 
   %%
-    dIR            = JM2-JM1;
-    dpIR           = JM1-JM2;
-    dIRS           = JM4+JM16-JM3-JM15;
-    dpIRS          = JM3-JM4;
-    diIRS          = JM15-JM16;
-    dAKT           = JM6-JM5;
-    dPAKT          = JM5-JM6;
-    dmTORC1        = JM8-JM7-JM13;
-    dpmTORC1       = JM7-JM8;
-    dmTORC2        = JM10-JM9-JM14;
-    dpmTORC2       = JM9-JM10;
-    dmTORC1_DEPTOR = JM13;
-    dmTORC2_DEPTOR = JM14;
-    dDEPTOR        = JM12-JM11-JM13-JM14;
-    dpDEPTOR       = JM11-JM12;
-    dAMPK          = JM18-JM17; 
-    dpAMPK         = JM17-JM18; 
-    dSIRT1         = JM19; 
-    dULK1          = JM21-JM20; 
-    dpULK1         = JM20-JM21; 
+    
 
 
 
-        f(1)  = -r1 + r2 -AK -CK  -2* J_ATP_Ca +rc;%ATP
+        f(1)  = -r1 + r2 -AK -CK  -2* J_ATP_Ca +rc/1000;%ATP
         f(2)  = r1-r2 + 2*AK +CK +2*J_ATP_Ca ;%ADP
-        f(3)  = -AK  -r20 - rc;%AMP
+        f(3)  = -AK  -r20 - rc/1000;%AMP
         f(4)  = CK;
         f(5)  = r1 -r2;%Pi
         f(5)  =0; % clamp Pi, it is not used anyway
-        f(6) = -rc + dAMPK/1000;%AMPK
-        f(7) = rc + dpAMPK/1000;%pAMPK
+        f(6) = -rc + JM18-JM17;%AMPK
+        f(7) = rc - JM18 + JM17;%pAMPK
         f(8) = -r20-r21+r22;%Act_AMPK
         f(9) = r20-r21+r23;%Act_pAMPK
         f(10) = -r22-r23+r24-r25;%Act
         f(11) = 0;%AICAR
-        f(12:42) = xdot_cal;
+
+        f(8:11) = 0;
+        f(12) =  -200 * Glut; % Glutamate
+        f(13) =  4*(J_SERCA - J_IP3R - J_RYR-J_ER_leak) - J_ER_Buff; % Ca_ER
+        %xdot(2) = 0;
+        f(14) =  -1/4*(J_SERCA - J_IP3R - J_RYR+J_ER_leak) + J_PM - J_BuffCa -J_CaMBind; % CA_C
+        f(15) =  J_w; % w
+        f(16) =  J_Ri; % Ri
+        f(17) =  J_R2; % R2
+        f(18) =  J_DIM; % DIM
+        f(19) =  J_DAG; %DAG
+        f(20) =  J_DIMp; %dimp
+        f(21) = -JN1 ; %NMDA C0
+        f(22) =  +JN1 - JN2; %NMDA C1
+        f(23) =  +JN2 -JN3 -JN4; %NMDA C2
+        f(24) =  JN3; %NMDA D
+        f(25) =  JN4; %NMDA O
+        f(26) =  J_PKC; %PKC
+        f(27) = J_IP - kdeg*(IP3 - 0.01);
+        f(28) = -J_BuffCa;
+        f(29) = +J_BuffCa;
+        f(30) = J_ER_Buff;
+        
+        f(31) = -JA1 ;%U
+        f(32) = +JA1 - JA2-JA4 ;%M
+        f(33) = JA2 - JA3 - JA5 ;%C
+        f(34) =  JA3 - JA6;%O
+        f(35) =  JA4 - JA7;%D1
+        f(36) =  JA5 + JA7 - JA8;%D2
+        f(37) =  JA6 + JA8;%D3
+        f(38) =  0; %V
+        f(39) = -J_CaMBind + J_CaMDisc; %CaM
+        f(40) = J_CaMBind - J_CaMDisc;%CaCaM
+        f(41) =  -J_CAMKK2_Act + J_CAMKK2_Deac; %CAMKK2
+        f(42) = J_CAMKK2_Act -J_CAMKK2_Deac; %CAMKK2_act
+        f(43) = JM2-JM1;
+        f(44) = JM1-JM2;
+        f(45) = JM4+JM16-JM3-JM15;
+        f(46) = JM3-JM4;
+        f(47) = JM15-JM16;
+        f(48) = JM6-JM5;
+        f(49) = JM5-JM6;
+        f(50) = JM8-JM7-JM13;
+        f(51) = JM7-JM8;
+        f(52) = JM10-JM9-JM14;
+        f(53) = JM9-JM10;
+        f(54) = JM13;
+        f(55) = JM14;
+        f(56) = JM12-JM11-JM13-JM14;
+        f(57) = JM11-JM12;
+        f(58) = JM19; 
+        f(59) = JM21-JM20; 
+        f(60) = JM20-JM21; 
+        f(43:60) = f(43:60) ./1000;
 
 
         f=f';
-
-            y=[
-    dIR;
-    dpIR;
-    dIRS;
-    dpIRS;
-    diIRS;
-    dAKT;
-    dPAKT;
-    dmTORC1;
-    dpmTORC1;
-    dmTORC2;
-    dpmTORC2;
-    dmTORC1_DEPTOR;
-    dmTORC2_DEPTOR;
-    dDEPTOR;
-    dpDEPTOR;
-    dSIRT1; 
-    dULK1; 
-    dpULK1; 
-    ]./1000;
-            f=[f;y];
         
 end
 

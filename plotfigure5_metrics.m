@@ -18,9 +18,9 @@ plotformat
 
 %% panel 2 Period
 subplot(3,4,8)
- bar(barlabel,[period_a;period_m1;period_m2])
-ylim([15,25])
- ylabel('Period [s]')
+ bar(barlabel,[tte_a;tte_m1;tte_m2])
+
+ ylabel('Time to Equilibrium [s]')
 
 plotformat
 %% panel 3 maxamplitude

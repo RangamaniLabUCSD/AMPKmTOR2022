@@ -25,11 +25,11 @@ subplot(3,3,7)
 ylabel('Normalized AUC')
 plotformat
 
-%% panel 2 Period
+%% panel 2 Time to Equilibrium
 subplot(3,3,8)
- bar(barlabel,[period_a;period_m1;period_m2])
-ylim([20,30])
- ylabel('Period [s]')
+ bar(barlabel,[tte_a;tte_m1;tte_m2])
+% ylim([0,200])
+ ylabel('Time to Equilibrium [s]')
 
 plotformat
 %% panel 3 maxamplitude
